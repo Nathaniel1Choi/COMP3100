@@ -154,12 +154,12 @@ public class Client {
     public int id;
     public int coreCount;
     public int memory;
-    public int bootupTime
+    public int bootupTime;
     public int limit;
     public float rate;
     public String type;
     
-  Server(int disk, int id, int coreCount, int memory, int bootupTime, int limit, float rate, String type)
+  Server(int disk, int id, int coreCount, int memory, int bootupTime, int limit, float rate, String type){
     this.disk = disk;
     this.id = id;
     this.coreCount = coreCount;
@@ -169,4 +169,81 @@ public class Client {
     this.rate = rate;
     this.type = type;
   }
+  
+  
+  public int getDisk(){ // Disk space
+    return this.disk;
+  }
+  
+  public int getID(){ // Server ID
+    return this.id;
+  }
+  
+  public int getCoreCount(){ // CPU cores
+    return this.coreCount;
+  }
+  
+  public int getMemory(){ // RAM
+    return this.memory;
+  }
+  
+  public int getBootupTime(){ // Time taken to boot a server 
+    return this.bootupTime;
+  }
+  
+  public int getLimit(){ // Limit of servers
+    return this.limit;
+  }
+  
+  public float getRate(){ // Rate hourly
+    return this.rate;
+  }
+  
+  public String getType(){
+    return this.type;
+  }
+ }
+  
+  public class Job{
+   public int diskReq;
+   public int jobID;
+   public int coreReq;
+   public int memoryReq;
+   public int startTime;
+   public int runTime;
+   
+  public Job(int diskReq, int jobID, int coreReq, int memoryReq, int startTime, int runTime){
+   this.diskReq = diskReq;
+   this.jobID = jobID;
+   this.coreReq = coreReq;
+   this.memoryReq = memoryReq;
+   this.startTime = startTime;
+   this.runTime = runTime;
+  }
+  
+  public int getDiskReq(){
+    return this.diskReq;
+  }
+  
+  public int getJobID(){
+    return this.jobID;
+  }
+  
+  public int getCoreReq(){
+    return this.coreReq;
+  }
+  
+  public int getMemoryReq(){
+    return this.memoryReq;
+  }
+  
+  public int getStartTime(){
+    return this.startTime;
+  }
+  
+  public int getRunTime(){
+    return this.runTime;
+  }
+ }
+  
 }
