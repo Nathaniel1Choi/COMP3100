@@ -95,7 +95,8 @@ public class Client {
   catch(IOException i){
   System.out.println(i);
   }
-  }
+ }
+  
 
   //Quit Simulation method
   public void quitSimulation() {
@@ -146,5 +147,26 @@ public class Client {
       System.out.println(i);
     }
     return messageIn;
+  }
+  
+  public class Server {
+    public int disk;
+    public int id;
+    public int coreCount;
+    public int memory;
+    public int bootupTime
+    public int limit;
+    public float rate;
+    public String type;
+    
+  Server(int disk, int id, int coreCount, int memory, int bootupTime, int limit, float rate, String type)
+    this.disk = disk;
+    this.id = id;
+    this.coreCount = coreCount;
+    this.memory = memory;
+    this.bootupTime = bootupTime;
+    this.limit = limit;
+    this.rate = rate;
+    this.type = type;
   }
 }
