@@ -7,7 +7,7 @@ import java.io.IOException;                          //LIBARARIES NEEDED FOR PRO
 import java.io.InputStreamReader;
 import java.net.Socket;
 import java.net.UnknownHostException;
-
+import java.util.ArrayList;
 
 public class Client {
   
@@ -60,6 +60,10 @@ public class Client {
     dout.flush();
     currentString = readMessage();
     System.out.println("Welcome " + username);
+    
+    ArrayList<Server> t = new ArrayList<Server>();
+    
+    ArrayList<Job> j = new ArrayList<Job>();
 
     //REDY message
     dout.write(("REDY\n").getBytes());
@@ -80,6 +84,24 @@ public class Client {
     currentString = readMessage();
     System.out.println(currentString);
     
+    if(currentString.contains("JOBN")){
+    j.add(newJob(currentString));
+    
+    sendMessage(getsCapable(j.get(0)));
+    currentString = readMessage();
+    sendMessage("OK");
+    
+    currentString = readMessage();
+    t = buildServer(currentString);
+    sendMessage("OK");
+    currentString = readMessage();
+    
+    sendMessage(newAlgo(t, j));
+    currentString = readMessage();
+    
+    j.remove(0);
+}
+   
     //If message contains JOBN undergo scheduling 
     int count = 0;
     if(currentString.contains("JOBN") && count <10) {
@@ -96,7 +118,58 @@ public class Client {
   System.out.println(i);
   }
  }
-  
+ 
+ //New Algorithm for better rental cost and optimisation of average turnaround time
+ public String newAlgo(ArrayList<Server> servers, ArrayList<Job> jobs){
+   String infoServer = "";
+   
+   for(Server s: servers){
+   	for(Job job: jobs){
+   	  if(s.getDisk() >= job.getDiskReq() && s.getCoreCount() >= job.getCoreReq() && s.getMemory() >= job.getMemoryReq() && job.getStartTime() >= job.getRunTime()){
+   	  infoServer = s.getType() + " " + s.getID();
+   	  return "SCHD " + job.getJobID() + " " + infoServer;
+   	  }
+   	  else{
+   	  infoServer = servers.get(0).getType() + " " + servers.get(0).getID();
+   	  }
+ 	}
+   }
+   return "SCHD " + jobs.get(0).getJobID() + " " + infoServer;
+ }
+ 
+ //Array list of capable servers of the newAlgo algorithm is filled
+ public ArrayList<Server> buildServer(String server){
+   server = server.trim();
+   
+   ArrayList<Server> newServer = new ArrayList<Server>();
+   
+   String[] line = server.split("\\r?\\n"); // Create a new line
+   
+   for(String lines : line){
+   	String[] stringSplit = lines.split("\\s+");
+   	
+   	//Based on disk, server ID, Core Count, Memory, server Type, new server is created
+   	Server s = new Server(stringSplit[0], Integer.parseInt(stringSplit[1]), Integer.parseInt(stringSplit[4]), Integer.parseInt(stringSplit[5]), Integer.parseInt(stringSplit[6]));
+   	newServer.add(s);
+     }
+     return newServer;
+ }
+ 
+ //Job Object
+ public Job newJob(String job){
+   job = job.trim();
+   String[] stringSplit = job.split("\\s+");
+   
+   //Based on disk, job ID, core, memory, start time and run time, new job is created
+   Job jobs = new Job(Integer.parseInt(stringSplit[1]), Integer.parseInt(stringSplit[2]), Integer.parseInt(stringSplit[3]), Integer.parseInt(stringSplit[4]), Integer.parseInt(stringSplit[5]), Integer.parseInt(stringSplit[6]));
+   
+   return jobs;
+}
+
+//Gets Capable method for servers that are based on 
+public String getsCapable(Job jobs){
+  return("GETS Capable " + jobs.getDiskReq() + " " + jobs.getCoreReq() + " " + jobs.getMemoryReq());
+  }
 
   //Quit Simulation method
   public void quitSimulation() {
@@ -150,27 +223,33 @@ public class Client {
   }
   
   public class Server {
-    public int disk;
-    public int id;
+    public String type;
+    public float rate;
+    public int limit;
+    public int bootupTime;
     public int coreCount;
     public int memory;
-    public int bootupTime;
-    public int limit;
-    public float rate;
-    public String type;
+    public int disk;
+    public int id;
     
-  Server(int disk, int id, int coreCount, int memory, int bootupTime, int limit, float rate, String type){
-    this.disk = disk;
-    this.id = id;
+  public Server(String type, int limit, int bootupTime, float rate, int coreCount, int memory, int disk){
+    this.type = type;
+    this.limit = limit;
+    this.bootupTime = bootupTime;
+    this.rate = rate;
     this.coreCount = coreCount;
     this.memory = memory;
-    this.bootupTime = bootupTime;
-    this.limit = limit;
-    this.rate = rate;
-    this.type = type;
-  }
-  
-  
+    this.disk = disk;
+   }
+   
+  public Server(String type, int id, int coreCount, int memory, int disk){
+  this.type = type;
+  this.id = id;
+  this.coreCount = coreCount;
+  this.memory = memory;
+  this.disk = disk;
+ }
+
   public int getDisk(){ // Disk space
     return this.disk;
   }
@@ -245,5 +324,5 @@ public class Client {
     return this.runTime;
   }
  }
-  
 }
+
