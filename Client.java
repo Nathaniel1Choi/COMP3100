@@ -84,22 +84,22 @@ public class Client {
     currentString = readMessage();
     System.out.println(currentString);
     
-    if(currentString.contains("JOBN")){
+    if(currentString.contains("JOBN")){ //New job creation
     j.add(newJob(currentString));
     
-    sendMessage(getsCapable(j.get(0)));
+    sendMessage(getsCapable(j.get(0))); //Gets Capable message called for available servers determination for scheduling
     currentString = readMessage();
     sendMessage("OK");
     
-    currentString = readMessage();
+    currentString = readMessage(); //Servers that are capable are added to an array list
     t = buildServer(currentString);
     sendMessage("OK");
     currentString = readMessage();
     
-    sendMessage(newAlgo(t, j));
+    sendMessage(newAlgo(t, j)); //Calling the new algorithm
     currentString = readMessage();
     
-    j.remove(0);
+    j.remove(0); 
 }
    
     //If message contains JOBN undergo scheduling 
